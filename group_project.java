@@ -1,4 +1,3 @@
-//tests commit
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,7 +38,7 @@ public class group_project extends JFrame {
 
         add(inputPanel, BorderLayout.NORTH);
 
-        // Center Panel (Button & Output)
+        // Center Panel 
         JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
         centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
 
@@ -76,37 +75,28 @@ public class group_project extends JFrame {
 
             int gaps = n - 1;
             
-            // 1. ARRAY ALLOCATION
             int[] results = new int[n];
             
-            // 2. STACK ADT IMPLEMENTATION
-            // We use a Stack to store the current steps of a specific path.
             Stack<Integer> stepStack = new Stack<>();
             
-            // Iterate through all possible combinations of A and B
             for (int i = 0; i <= gaps; i++) {
                 stepStack.clear(); // Clear stack for the new path
                 int currentTotal = 0;
                 
-                // Simulate taking 'i' steps of A
                 for (int j = 0; j < i; j++) {
                     stepStack.push(a);
                 }
-                // Simulate taking the remaining steps of B
                 for (int k = 0; k < (gaps - i); k++) {
                     stepStack.push(b);
                 }
                 
-                // Pop all steps from the stack to calculate the final total for this path
                 while (!stepStack.isEmpty()) {
                     currentTotal += stepStack.pop();
                 }
                 
-                // Store the final total in the Array
                 results[i] = currentTotal;
             }
 
-            // 3. SORTING TECHNIQUE: Bubble Sort
             for (int i = 0; i < results.length - 1; i++) {
                 for (int j = 0; j < results.length - i - 1; j++) {
                     if (results[j] > results[j + 1]) {
@@ -117,7 +107,6 @@ public class group_project extends JFrame {
                 }
             }
 
-            // 4. OUTPUT & DUPLICATE REMOVAL
             StringBuilder sb = new StringBuilder();
             sb.append("Possible values (Sorted):\n\n");
             
