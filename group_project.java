@@ -19,7 +19,7 @@ public class group_project extends JFrame {
         setLayout(new BorderLayout(10, 10));
         setLocationRelativeTo(null);
 
-        // Input Panel
+        //Input Panel
         JPanel inputPanel = new JPanel(new GridLayout(3, 2, 10, 10));
         inputPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -37,7 +37,7 @@ public class group_project extends JFrame {
 
         add(inputPanel, BorderLayout.NORTH);
 
-        // Center Panel 
+        //Center Panel 
         JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
         centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
 
@@ -50,7 +50,7 @@ public class group_project extends JFrame {
         centerPanel.add(new JScrollPane(outputArea), BorderLayout.CENTER);
         add(centerPanel, BorderLayout.CENTER);
 
-        // Action Listener
+        // Button Listener
         calculateBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
