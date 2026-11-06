@@ -1,4 +1,3 @@
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,9 +13,9 @@ public class group_project extends JFrame {
     private JButton calculateBtn;
 
     public group_project() {
-        setTitle("Manasa and Stones - Stack & Array Implementation");
+        setTitle("Manasa and Stones - Stack & Array");
         setSize(500, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
         setLocationRelativeTo(null);
 
@@ -25,15 +24,15 @@ public class group_project extends JFrame {
         inputPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         inputPanel.add(new JLabel("Number of Stones (n):"));
-        inputN = new JTextField("4");
+        inputN = new JTextField();
         inputPanel.add(inputN);
 
         inputPanel.add(new JLabel("Difference A (a):"));
-        inputA = new JTextField("10");
+        inputA = new JTextField();
         inputPanel.add(inputA);
 
         inputPanel.add(new JLabel("Difference B (b):"));
-        inputB = new JTextField("100");
+        inputB = new JTextField();
         inputPanel.add(inputB);
 
         add(inputPanel, BorderLayout.NORTH);
@@ -42,12 +41,10 @@ public class group_project extends JFrame {
         JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
         centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
 
-        calculateBtn = new JButton("Calculate (Using Stack & Array)");
-        calculateBtn.setFont(new Font("Arial", Font.BOLD, 14));
+        calculateBtn = new JButton("Calculate");
         centerPanel.add(calculateBtn, BorderLayout.NORTH);
         outputArea = new JTextArea();
         outputArea.setEditable(false);
-        outputArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         outputArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         
         centerPanel.add(new JScrollPane(outputArea), BorderLayout.CENTER);
