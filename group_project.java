@@ -1,26 +1,34 @@
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Stack;
+import java.util.HashSet;
+import java.util.PriorityQueue; // This is the Min-Heap
+import java.util.Set;
+import javax.swing.*;
 
-public class group_project extends JFrame {
+// --- ADT: Abstract Data Type Definition (From Week 1 SIM-SDL) ---
+// This interface defines WHAT operations we do, not HOW.
+interface StoneCalculationADT {
+    void calculatePaths(int n, int a, int b);
+    String getSortedResults();
+}
+
+// --- Implementation Class ---
+public class group_project extends JFrame implements StoneCalculationADT {
 
     // --- UI Components ---
-    static JTextField stonesInput;
-    static JTextField differenceAInput;
-    static JTextField differenceBInput;
-    static JTextArea outputArea;
-    static JButton calculateButton;
-    static JButton encryptButton;
+    private JTextField stonesInput;
+    private JTextField differenceAInput;
+    private JTextField differenceBInput;
+    private JTextArea outputArea;
+    private JButton calculateButton;
+    private JButton encryptButton;
 
     // Variable to store the raw numbers before encryption
-    static String rawResultText = "";
+    private String rawResultText = "";
 
     public group_project() {
         // Setup Window
-        setTitle("Manasa and Stones - IT Project");
-        setSize(500, 600);
+        setTitle("Manasa and Stones - IT Project (ADT & Heaps)");
+        setSize(600, 650);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
         setLocationRelativeTo(null);
@@ -48,9 +56,9 @@ public class group_project extends JFrame {
         centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
 
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 10, 10));
-        calculateButton = new JButton("Calculate & Sort");
+        calculateButton = new JButton("Calculate (Min-Heap)");
         encryptButton = new JButton("Encrypt Result");
-        encryptButton.setEnabled(false); // Disabled until calculation is done
+        encryptButton.setEnabled(false); 
         
         buttonPanel.add(calculateButton);
         buttonPanel.add(encryptButton);
@@ -64,95 +72,68 @@ public class group_project extends JFrame {
         centerPanel.add(new JScrollPane(outputArea), BorderLayout.CENTER);
         add(centerPanel, BorderLayout.CENTER);
 
-        // 3. Button Actions
-        calculateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                calculatePaths();
+        // 3. Button Actions (Lambdas)
+        calculateButton.addActionListener(e -> {
+            try {
+                int n = Integer.parseInt(stonesInput.getText().trim());
+                int a = Integer.parseInt(differenceAInput.getText().trim());
+                int b = Integer.parseInt(differenceBInput.getText().trim());
+                calculatePaths(n, a, b);
+            } catch (NumberFormatException ex) {
+                outputArea.setText("Error: Please enter valid integers.");
             }
         });
 
-        encryptButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                encryptText();
-            }
-        });
+        encryptButton.addActionListener(e -> encryptText());
     }
 
-    private void calculatePaths() {
-        try {
-            // Get values from text fields
-            int totalStones = Integer.parseInt(stonesInput.getText().trim());
-            int diffA = Integer.parseInt(differenceAInput.getText().trim());
-            int diffB = Integer.parseInt(differenceBInput.getText().trim());
-
-            if (totalStones <= 0) {
-                outputArea.setText("Error: Number of stones must be greater than 0.");
-                return;
-            }
-
-            int gaps = totalStones - 1;
-            
-            // Data Structure 1: Array to hold results
-            int[] resultsArray = new int[totalStones];
-            
-            // Data Structure 2: Stack for calculating paths
-            Stack<Integer> pathStack = new Stack<>();
-            
-            for (int i = 0; i <= gaps; i++) {
-                pathStack.clear(); 
-                int currentTotal = 0;
-                
-                // Push difference A
-                for (int j = 0; j < i; j++) {
-                    pathStack.push(diffA);
-                }
-                // Push difference B
-                for (int k = 0; k < (gaps - i); k++) {
-                    pathStack.push(diffB);
-                }
-                
-                // Pop everything from the stack to add it up
-                while (!pathStack.isEmpty()) {
-                    currentTotal += pathStack.pop();
-                }
-                
-                resultsArray[i] = currentTotal;
-            }
-
-            // Sorting Algorithm: Bubble Sort
-            for (int i = 0; i < resultsArray.length - 1; i++) {
-                for (int j = 0; j < resultsArray.length - i - 1; j++) {
-                    if (resultsArray[j] > resultsArray[j + 1]) {
-                        // Swap
-                        int temp = resultsArray[j];
-                        resultsArray[j] = resultsArray[j + 1];
-                        resultsArray[j + 1] = temp;
-                    }
-                }
-            }
-
-            StringBuilder finalOutput = new StringBuilder();
-            finalOutput.append("Possible values (Sorted):\n\n");
-            
-            int previousValue = -1; 
-            
-            for (int i = 0; i < resultsArray.length; i++) {
-                if (i == 0 || resultsArray[i] != previousValue) {
-                    finalOutput.append(resultsArray[i]).append(" ");
-                    previousValue = resultsArray[i];
-                }
-            }
-
-            // Save the result
-            rawResultText = finalOutput.toString();
-            outputArea.setText(rawResultText);
-            encryptButton.setEnabled(true); 
-
-        } catch (NumberFormatException ex) {
-            outputArea.setText("Error: Please enter valid integers only.");
+    // --- Implementation of ADT Method ---
+    @Override
+    public void calculatePaths(int totalStones, int diffA, int diffB) {
+        if (totalStones <= 0) {
+            outputArea.setText("Error: Number of stones must be greater than 0.");
+            return;
         }
+
+        // Data Structure: Min-Heap (Priority Queue)
+        // From "BINARY-MAX HEAP - MIN HEAP" document.
+        // The Min-Heap automatically sorts elements as they are added.
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        
+        // Data Structure: Set to avoid duplicates (Part of ADT specification)
+        Set<Integer> uniqueResults = new HashSet<>();
+
+        int gaps = totalStones - 1;
+
+        // Logic to simulate paths (using a Queue/BFS approach conceptually)
+        // We are effectively generating all combinations of A and B.
+        for (int i = 0; i <= gaps; i++) {
+            int currentTotal = (i * diffA) + ((gaps - i) * diffB);
+            
+            // Add to heap if unique
+            if (uniqueResults.add(currentTotal)) {
+                minHeap.add(currentTotal);
+            }
+        }
+
+        // Build Output string
+        StringBuilder finalOutput = new StringBuilder();
+        finalOutput.append("--- RESULTS (Sorted via Min-Heap) ---\n\n");
+        
+        // Poll removes the smallest element (Min-Heap behavior)
+        while (!minHeap.isEmpty()) {
+            finalOutput.append(minHeap.poll()).append(" ");
+        }
+
+        // Save the result
+        rawResultText = finalOutput.toString();
+        outputArea.setText(rawResultText);
+        encryptButton.setEnabled(true); 
+    }
+
+    @Override
+    public String getSortedResults() {
+        return rawResultText;
     }
 
     // Cryptography: Caesar Cipher
@@ -169,7 +150,6 @@ public class group_project extends JFrame {
                 char newLetter = (char) ((letter - base + shift) % 26 + base);
                 encryptedText.append(newLetter);
             } else {
-                // Leave numbers and spaces alone
                 encryptedText.append(letter);
             }
         }
@@ -178,11 +158,6 @@ public class group_project extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new group_project().setVisible(true);
-            }
-        });
+        SwingUtilities.invokeLater(() -> new group_project().setVisible(true));
     }
 }
